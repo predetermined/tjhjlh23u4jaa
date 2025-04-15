@@ -1,18 +1,7 @@
 "use client";
 
+import { Chart, ChartType, type ChartDataEntry } from "@/components/chart";
 import { useCallback, useEffect, useState } from "react";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
-import { twMerge } from "tailwind-merge";
 import type {
   SimulationRouteGetResponseJson,
   SimulationRouteGetResponseJsonData,
@@ -25,11 +14,6 @@ interface Inputs {
   chargingPowerPerChargepointKW: number;
 }
 
-interface ChartDataEntry {
-  name: string;
-  value: number;
-}
-
 const DEFAULT_INPUTS = {
   chargepoints: 20,
   arrivalProbabilityMultiplierPercentage: 100,
@@ -39,19 +23,6 @@ const DEFAULT_INPUTS = {
 
 const TICKS_PER_WEEK = 672;
 const TICKS_PER_MONTH = 2976;
-
-const LoadingText = (props: { className?: string }) => {
-  return (
-    <div
-      className={twMerge(
-        "flex items-center justify-center rounded",
-        props.className
-      )}
-    >
-      <p className="animate-pulse italic">Loading...</p>
-    </div>
-  );
-};
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -147,135 +118,42 @@ export default function Home() {
             <h3 className="italic text-xs mb-1">
               Aggregated consumption (kWh)
             </h3>
-            {isLoading ? (
-              <LoadingText className="h-[300px] w-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart
-                  data={aggregatedMonthlyChartData}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 16,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#82ca9d"
-                    fill="#82ca9d"
-                  />
-                  <Tooltip />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
+            <Chart
+              type={ChartType.Area}
+              data={aggregatedMonthlyChartData}
+              isLoading={isLoading}
+            />
           </div>
 
           <div className="bg-gray-100 p-4 rounded-sm border border-neutral-200">
             <h3 className="italic text-xs mb-1">Consumption per week (kWh)</h3>
-            {isLoading ? (
-              <LoadingText className="h-[300px] w-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart
-                  className=""
-                  height={300}
-                  data={weeklyChartData}
-                  width={500}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 16,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#82ca9d"
-                    fill="#82ca9d"
-                  />
-                  <Tooltip />
-                </AreaChart>
-              </ResponsiveContainer>
-            )}
+            <Chart
+              type={ChartType.Area}
+              data={weeklyChartData}
+              isLoading={isLoading}
+            />
           </div>
 
           <div className="bg-gray-100 p-4 rounded-sm border border-neutral-200 flex-1">
             <h3 className="italic text-xs mb-1">
               Consumption per chargepoint (kWh)
             </h3>
-            {isLoading ? (
-              <LoadingText className="h-[300px] w-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  className=""
-                  height={300}
-                  data={chargepointsChartData}
-                  width={500}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 16,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
-                  <Bar
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#82ca9d"
-                    fill="#82ca9d"
-                  />
-                  <Tooltip />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+            <Chart
+              type={ChartType.Bar}
+              data={chargepointsChartData}
+              isLoading={isLoading}
+            />
           </div>
 
           <div className="bg-gray-100 p-4 rounded-sm border border-neutral-200">
             <h3 className="italic text-xs mb-1">
               Consumption per hour on the first day (kWh)
             </h3>
-            {isLoading ? (
-              <LoadingText className="h-[300px] w-full" />
-            ) : (
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart
-                  className=""
-                  height={300}
-                  data={firstDayChartData}
-                  width={500}
-                  margin={{
-                    left: 0,
-                    right: 0,
-                    top: 16,
-                    bottom: 0,
-                  }}
-                >
-                  <XAxis dataKey="name" className="text-xs" />
-                  <YAxis className="text-xs" />
-                  <CartesianGrid stroke="#eee" strokeDasharray="3 3" />
-                  <Bar
-                    type="monotone"
-                    dataKey="value"
-                    stroke="#82ca9d"
-                    fill="#82ca9d"
-                  />
-                  <Tooltip />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+            <Chart
+              type={ChartType.Bar}
+              data={firstDayChartData}
+              isLoading={isLoading}
+            />
           </div>
         </div>
 
